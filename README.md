@@ -41,3 +41,26 @@ Replace the example email address in the Contact page with your own.
 yarn build
 yarn start
 ```
+
+## Contact API
+
+`POST /api/contact` accepts a JSON object with `name` (1–100 characters),
+`email` (a valid email address, up to 254 characters), and `message`
+(1–5000 characters). Name and message are trimmed before validation.
+
+Validation uses Zod in `lib/validation/contact.ts`; the schema and inferred
+`ContactInput` type can also be imported by a future frontend form.
+
+- `200`: input validated. This example does **not** send or store messages.
+- `400`: malformed JSON or invalid fields. Validation responses include
+  `fieldErrors` and `formErrors`.
+- Unsupported methods return `405` through Next.js.
+
+Connect an email provider or database in `app/api/contact/route.ts` to process
+validated submissions. The Contact page remains unchanged.
+
+```sh
+curl -X POST http://localhost:3000/api/contact \
+  -H 'Content-Type: application/json' \
+  -d '{"name":"Ada","email":"ada@example.com","message":"Hello!"}'
+```
